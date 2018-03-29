@@ -4,7 +4,10 @@ import org.junit.Test;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 /**
  * xuchuahao
@@ -32,8 +35,38 @@ import java.nio.channels.FileChannel;
  * <p>
  * 2. 在jdk 1.7中 NIO.2 针对各个通道提供了静态方法 open（）
  * 3. 在jdk 1.7中 NIO.2 的files工具类 newByteChannel（）
+ * <p>
+ * 4.通道之间的数据传输
+ * transferTo
+ * transferFrom
  */
+
 public class ChannelExample {
+
+    @Test
+    public void copyDemo3() throws IOException {
+        FileChannel inChannel = FileChannel.open(Paths.get("1.jpg"), StandardOpenOption.READ);
+        FileChannel outChannel = FileChannel.open(Paths.get("3.jpg"), StandardOpenOption.READ, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+
+        inChannel.transferTo(0, inChannel.size(), outChannel);
+
+        inChannel.close();
+        outChannel.close();
+
+    }
+
+    // 使用直接缓冲区复制文件（内存映射文件）
+    @Test
+    public void copyDemo2() throws IOException {
+        FileChannel inChannel = FileChannel.open(Paths.get("1.jpg"), StandardOpenOption.READ);
+        FileChannel outChannel = FileChannel.open(Paths.get("2.jpg"), StandardOpenOption.READ, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+
+        inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
+        outChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
+
+        inChannel.close();
+        outChannel.close();
+    }
 
     @Test
     // 1.利用通道完成文件复制（非直接缓冲区）
