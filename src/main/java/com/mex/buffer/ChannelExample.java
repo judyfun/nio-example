@@ -39,9 +39,39 @@ import java.nio.file.StandardOpenOption;
  * 4.通道之间的数据传输
  * transferTo
  * transferFrom
+ * <p>
+ * 5.分散（scatter）与聚集(Gather)
+ * 分散读取（Scattering Reads） : 将通道中的数据分散到多个缓冲区
+ * 聚集写入：（Gathering Writes）: 将多个缓冲区的数据聚集到通道中
  */
 
 public class ChannelExample {
+
+    @Test
+    public void copyDemo4() throws IOException {
+        RandomAccessFile file1 = new RandomAccessFile("1.txt", "rw");
+        RandomAccessFile file2 = new RandomAccessFile("2.txt", "rw");
+
+        FileChannel channel1 = file1.getChannel();
+        FileChannel channel2 = file2.getChannel();
+
+        ByteBuffer buffer1 = ByteBuffer.allocate(100);
+        ByteBuffer buffer2 = ByteBuffer.allocate(1024);
+
+        ByteBuffer[] dst = {buffer1, buffer2};
+
+        channel1.read(dst);
+
+        for (ByteBuffer byteBuffer : dst) {
+            byteBuffer.flip();
+        }
+
+        System.out.println(new String(dst[0].array(), 0, dst[0].limit()));
+        System.out.println(new String(dst[1].array(), 0, dst[1].limit()));
+
+
+        channel2.write(dst);
+    }
 
     @Test
     public void copyDemo3() throws IOException {
