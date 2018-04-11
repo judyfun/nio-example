@@ -3,6 +3,7 @@ package com.mex.netty;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.jboss.netty.handler.codec.string.StringDecoder;
 import org.jboss.netty.handler.codec.string.StringEncoder;
 
 import java.net.InetSocketAddress;
@@ -30,8 +31,9 @@ public class Client {
             @Override
             public ChannelPipeline getPipeline() throws Exception {
                 ChannelPipeline pipeline = Channels.pipeline();
+                pipeline.addLast("decoder", new StringDecoder());
                 pipeline.addLast("encoder", new StringEncoder());
-                pipeline.addLast("hiHandler", new HiHandler());
+                pipeline.addLast("hiHandler", new HiClinetHandler());
                 return pipeline;
             }
         });

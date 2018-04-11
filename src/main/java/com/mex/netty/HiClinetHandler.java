@@ -6,7 +6,7 @@ import org.jboss.netty.channel.*;
  * xuchuahao
  * on 2018/4/10.
  */
-public class HiHandler extends SimpleChannelHandler {
+public class HiClinetHandler extends SimpleChannelHandler {
 
     @Override
     public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
@@ -24,6 +24,8 @@ public class HiHandler extends SimpleChannelHandler {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         System.out.println("messageReceived");
+        Object message = e.getMessage();
+        System.out.println("received msg : " + (String) message);
         super.messageReceived(ctx, e);
     }
 
